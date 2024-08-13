@@ -13,11 +13,19 @@ WORKDIR /app
 RUN go mod download
 RUN go build -o main
 
-# Expose the port your application listens on (if applicable)
-#EXPOSE 8080 Cloud Run kümmert sich automatisch darum, 
-#dass der Port 8080 für den eingehenden Traffic verfügbar ist. 
+# FROM alpine:latest
+# WORKDIR /app
+# COPY --from=builder /app/main .
+# CMD ["/app/main"]
 
+# Use a smaller base image for production
 FROM alpine:latest
-WORKDIR /app
+
+# Copy the built executable from the builder stage
 COPY --from=builder /app/main .
+
+# Set the working directory
+WORKDIR /app
+
+# Run the executable
 CMD ["/app/main"]
